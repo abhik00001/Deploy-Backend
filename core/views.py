@@ -28,8 +28,8 @@ def register_user(request):
     if request.method == 'POST':
         print(request.data)
         serializer = UserSerializer(data = request.data)
-        vehicles = Vehicle.objects.all()
-        vehicle_data = VehicleSerializer(vehicles, many=True)
+        # vehicles = Vehicle.objects.all()
+        # vehicle_data = VehicleSerializer(vehicles, many=True)
         if serializer.is_valid():
             user = serializer.save()
             print(user)
@@ -44,7 +44,7 @@ def register_user(request):
                 user.save()
    
                 
-            return Response({"data":serializer.data,"vehicle":vehicle_data.data}, status=status.HTTP_201_CREATED)
+            return Response({"data":serializer.data}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -93,6 +93,7 @@ def login_user(request):
     if request.method == 'POST':
         email = request.data.get('email')
         password= request.data.get('password')
+        vehicle = Vehicle.objects.all()
         user = User.objects.filter(email = email).first()
         if user and user.check_password(password):
         # user = authenticate(email = email,password = password)
@@ -101,7 +102,8 @@ def login_user(request):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-                'user': UserSerializer(user).data
+                'user': UserSerializer(user).data,
+                'vehicles':VehicleSerializer(vehicle).data
             },status= status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
