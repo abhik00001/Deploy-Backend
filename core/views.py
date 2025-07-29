@@ -103,7 +103,7 @@ def login_user(request):
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
                 'user': UserSerializer(user).data,
-                'vehicles':VehicleSerializer(vehicle).data
+                'vehicles':VehicleSerializer(vehicle,many=True).data
             },status= status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -166,7 +166,7 @@ def passwordForgot(request):
         print(uid)
         token = PasswordResetTokenGenerator().make_token(user)
         print(token)
-        link = f"http://localhost:5173/reset_password/{uid}/{token}"
+        link = f"https://deploy-frontend-yk61.onrender.com/reset_password/{uid}/{token}"
         print(link)
         # user.reset_token = token
         # user.save()
